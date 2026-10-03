@@ -1,0 +1,2826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>Arjuuw's Money Tracker</title>
+
+<style>
+:root{
+    --bg:#f4f7fb;
+    --card:rgba(255,255,255,.88);
+    --text:#111827;
+    --muted:#6b7280;
+    --border:rgba(0,0,0,.08);
+    --primary:#6366f1;
+    --primary2:#8b5cf6;
+    --green:#10b981;
+    --red:#ef4444;
+    --blue:#3b82f6;
+    --shadow:0 15px 45px rgba(31,41,55,.08);
+}
+
+body.dark{
+    --bg:#080d19;
+    --card:rgba(17,24,39,.92);
+    --text:#f9fafb;
+    --muted:#9ca3af;
+    --border:rgba(255,255,255,.08);
+    --shadow:0 15px 45px rgba(0,0,0,.3);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+body{
+    min-height:100vh;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 10% 0%,rgba(99,102,241,.13),transparent 30%),
+        radial-gradient(circle at 90% 10%,rgba(139,92,246,.10),transparent 25%),
+        var(--bg);
+    transition:.3s;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+.app{
+    width:min(1180px,94%);
+    margin:auto;
+    padding-bottom:80px;
+}
+
+/* HEADER */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:25px 0;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-icon{
+    width:48px;
+    height:48px;
+    display:grid;
+    place-items:center;
+    border-radius:15px;
+    color:white;
+    font-size:23px;
+    font-weight:800;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    box-shadow:0 10px 28px rgba(99,102,241,.35);
+    animation:float 3s ease-in-out infinite;
+}
+
+.logo h1{
+    font-size:21px;
+    line-height:1.2;
+}
+
+.logo span{
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:3px;
+}
+
+.header-actions{
+    display:flex;
+    gap:9px;
+}
+
+.icon-btn{
+    width:43px;
+    height:43px;
+    border-radius:13px;
+    color:var(--text);
+    background:var(--card);
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    transition:.25s;
+}
+
+.icon-btn:hover{
+    transform:translateY(-3px) rotate(2deg);
+}
+
+/* HERO */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+    padding:30px;
+    color:white;
+    border-radius:28px;
+    background:
+        radial-gradient(circle at 80% 15%,rgba(255,255,255,.2),transparent 25%),
+        linear-gradient(135deg,#4f46e5,#7c3aed);
+    box-shadow:0 22px 60px rgba(79,70,229,.25);
+    animation:slideUp .6s ease;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:240px;
+    height:240px;
+    right:-110px;
+    bottom:-130px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+}
+
+.hero-top{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.hero small{
+    opacity:.72;
+}
+
+.balance{
+    margin:8px 0 22px;
+    font-size:clamp(35px,7vw,54px);
+    font-weight:800;
+    letter-spacing:-2px;
+}
+
+.hero-card-icon{
+    font-size:35px;
+    animation:float 3s ease-in-out infinite;
+}
+
+.hero-stats{
+    position:relative;
+    z-index:2;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,210px));
+    gap:12px;
+}
+
+.hero-stat{
+    padding:14px;
+    border-radius:15px;
+    background:rgba(255,255,255,.13);
+    backdrop-filter:blur(12px);
+    transition:.25s;
+}
+
+.hero-stat:hover{
+    transform:translateY(-3px);
+    background:rgba(255,255,255,.2);
+}
+
+.hero-stat span{
+    display:block;
+    font-size:12px;
+    opacity:.72;
+}
+
+.hero-stat strong{
+    display:block;
+    margin-top:4px;
+    font-size:18px;
+}
+
+/* SUMMARY */
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-top:18px;
+}
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:21px;
+    padding:20px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(15px);
+    animation:slideUp .65s ease;
+}
+
+.summary-card{
+    transition:.25s;
+}
+
+.summary-card:hover{
+    transform:translateY(-5px);
+}
+
+.summary-card .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.summary-card small{
+    color:var(--muted);
+}
+
+.summary-card h3{
+    margin-top:13px;
+    font-size:24px;
+}
+
+.summary-icon{
+    width:40px;
+    height:40px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    font-size:18px;
+}
+
+.income-icon{
+    background:rgba(16,185,129,.12);
+}
+
+.expense-icon{
+    background:rgba(239,68,68,.12);
+}
+
+.today-icon{
+    background:rgba(99,102,241,.12);
+}
+
+.income{
+    color:var(--green);
+}
+
+.expense{
+    color:var(--red);
+}
+
+/* MAIN */
+
+.main-grid{
+    display:grid;
+    grid-template-columns:1.35fr .9fr;
+    gap:18px;
+    margin-top:18px;
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:17px;
+}
+
+.section-title h2{
+    font-size:18px;
+}
+
+.section-title span{
+    color:var(--muted);
+    font-size:13px;
+}
+
+/* FILTERS */
+
+.filters{
+    display:flex;
+    gap:9px;
+    margin-bottom:14px;
+}
+
+.search{
+    flex:1;
+}
+
+.search input,
+.filters select{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    outline:none;
+    color:var(--text);
+    background:rgba(128,128,128,.06);
+    transition:.2s;
+}
+
+.search input:focus,
+.filters select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(99,102,241,.1);
+}
+
+/* TRANSACTIONS */
+
+.transaction-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    max-height:490px;
+    overflow-y:auto;
+}
+
+.transaction{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    border-radius:15px;
+    border:1px solid transparent;
+    animation:pop .3s ease;
+    transition:.25s;
+}
+
+.transaction:hover{
+    background:rgba(99,102,241,.06);
+    border-color:var(--border);
+    transform:translateX(3px);
+}
+
+.transaction-icon{
+    width:44px;
+    height:44px;
+    min-width:44px;
+    display:grid;
+    place-items:center;
+    border-radius:13px;
+    background:rgba(99,102,241,.1);
+    font-size:20px;
+}
+
+.transaction-info{
+    flex:1;
+    min-width:0;
+}
+
+.transaction-info strong{
+    display:block;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.transaction-info small{
+    color:var(--muted);
+    font-size:11px;
+}
+
+.transaction-amount{
+    text-align:right;
+    white-space:nowrap;
+}
+
+.delete-btn{
+    padding:5px;
+    color:var(--muted);
+    background:transparent;
+    opacity:0;
+    transition:.2s;
+}
+
+.transaction:hover .delete-btn{
+    opacity:1;
+}
+
+.delete-btn:hover{
+    color:var(--red);
+}
+
+/* CHART */
+
+.chart-tabs{
+    display:flex;
+    gap:7px;
+    margin-bottom:15px;
+}
+
+.chart-tab{
+    padding:7px 12px;
+    border-radius:9px;
+    color:var(--muted);
+    background:transparent;
+}
+
+.chart-tab.active{
+    color:var(--primary);
+    background:rgba(99,102,241,.12);
+}
+
+.chart-box{
+    height:270px;
+    position:relative;
+}
+
+.chart-empty{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    color:var(--muted);
+    text-align:center;
+}
+
+.chart-empty-icon{
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+.bar-chart{
+    height:100%;
+    display:flex;
+    align-items:flex-end;
+    gap:12px;
+    padding:20px 5px 35px;
+    overflow-x:auto;
+}
+
+.bar-item{
+    min-width:45px;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    flex-direction:column;
+    gap:7px;
+}
+
+.bar{
+    width:32px;
+    min-height:4px;
+    border-radius:8px 8px 3px 3px;
+    background:linear-gradient(
+        to top,
+        var(--primary),
+        var(--primary2)
+    );
+    transition:.5s;
+}
+
+.bar:hover{
+    opacity:.75;
+    transform:scaleX(1.08);
+}
+
+.bar-label{
+    font-size:10px;
+    color:var(--muted);
+    white-space:nowrap;
+}
+
+.bar-value{
+    font-size:10px;
+    color:var(--text);
+    white-space:nowrap;
+}
+
+/* ADD BUTTON */
+
+.add-btn{
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    z-index:20;
+    width:63px;
+    height:63px;
+    border-radius:20px;
+    color:white;
+    font-size:29px;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    box-shadow:0 14px 35px rgba(99,102,241,.4);
+    transition:.25s;
+    animation:pulse 3s infinite;
+}
+
+.add-btn:hover{
+    transform:scale(1.08) rotate(5deg);
+}
+
+.add-btn:active{
+    transform:scale(.92);
+}
+
+/* MODAL */
+
+.overlay{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(0,0,0,.52);
+    backdrop-filter:blur(8px);
+}
+
+.overlay.show{
+    display:flex;
+    animation:fade .25s ease;
+}
+
+.modal{
+    width:min(500px,100%);
+    padding:25px;
+    border-radius:26px;
+    border:1px solid var(--border);
+    background:var(--card);
+    box-shadow:0 30px 80px rgba(0,0,0,.25);
+    animation:modalIn .3s ease;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modal-header small{
+    color:var(--muted);
+}
+
+.close{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    color:var(--text);
+    background:rgba(128,128,128,.1);
+    transition:.2s;
+}
+
+.close:hover{
+    transform:rotate(90deg);
+}
+
+.type-switch{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    padding:5px;
+    margin-bottom:17px;
+    border-radius:13px;
+    background:rgba(128,128,128,.09);
+}
+
+.type-switch button{
+    padding:11px;
+    border-radius:10px;
+    color:var(--muted);
+    background:transparent;
+}
+
+.type-switch button.active{
+    color:var(--primary);
+    background:var(--card);
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.form-group{
+    margin-bottom:14px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    padding:13px;
+    border-radius:13px;
+    border:1px solid var(--border);
+    outline:none;
+    color:var(--text);
+    background:rgba(128,128,128,.07);
+    transition:.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(99,102,241,.1);
+}
+
+.save-btn{
+    width:100%;
+    padding:15px;
+    margin-top:5px;
+    border-radius:13px;
+    color:white;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));
+    transition:.2s;
+}
+
+.save-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(99,102,241,.25);
+}
+
+.save-btn:active{
+    transform:scale(.98);
+}
+
+/* EMPTY */
+
+.empty{
+    padding:55px 15px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.empty-icon{
+    margin-bottom:10px;
+    font-size:45px;
+}
+
+.empty p{
+    margin-top:5px;
+    font-size:13px;
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    z-index:100;
+    padding:13px 20px;
+    border-radius:13px;
+    color:white;
+    background:#111827;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,30px);
+    transition:.3s;
+    white-space:nowrap;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* FOOTER */
+
+footer{
+    margin-top:38px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+}
+
+footer strong{
+    color:var(--primary);
+}
+
+/* ANIMATIONS */
+
+@keyframes slideUp{
+    from{
+        opacity:0;
+        transform:translateY(18px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes pop{
+    from{
+        opacity:0;
+        transform:scale(.96);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@keyframes fade{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:translateY(25px) scale(.96);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-5px);
+    }
+}
+
+@keyframes pulse{
+    0%,100%{
+        box-shadow:0 14px 35px rgba(99,102,241,.4);
+    }
+    50%{
+        box-shadow:0 14px 45px rgba(99,102,241,.6);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    .main-grid{
+        grid-template-columns:1fr;
+    }
+
+    .summary{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .summary-card:last-child{
+        grid-column:span 2;
+    }
+}
+
+@media(max-width:520px){
+
+    .app{
+        width:92%;
+    }
+
+    header{
+        padding:18px 0;
+    }
+
+    .logo h1{
+        font-size:17px;
+    }
+
+    .logo-icon{
+        width:43px;
+        height:43px;
+    }
+
+    .hero{
+        padding:23px;
+        border-radius:23px;
+    }
+
+    .balance{
+        font-size:38px;
+    }
+
+    .hero-stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .summary{
+        gap:10px;
+    }
+
+    .card{
+        padding:16px;
+    }
+
+    .summary-card h3{
+        font-size:19px;
+    }
+
+    .filters{
+        flex-direction:column;
+    }
+
+    .delete-btn{
+        opacity:1;
+    }
+
+    .transaction-amount{
+        font-size:13px;
+    }
+
+    .add-btn{
+        right:18px;
+        bottom:18px;
+        width:58px;
+        height:58px;
+    }
+
+    .modal{
+        padding:20px;
+    }
+
+    .toast{
+        max-width:90%;
+        white-space:normal;
+        text-align:center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+    <div class="logo">
+
+        <div class="logo-icon">₹</div>
+
+        <div>
+            <h1>Arjuuw's Money Tracker</h1>
+            <span>Simple money tracking</span>
+        </div>
+
+    </div>
+
+    <div class="header-actions">
+
+        <button
+            class="icon-btn"
+            onclick="exportCSV()"
+            title="Export CSV">
+            ↥
+        </button>
+
+        <button
+            class="icon-btn"
+            onclick="toggleTheme()"
+            id="themeBtn"
+            title="Toggle theme">
+            ☾
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-top">
+
+        <div>
+
+            <small>Current Balance</small>
+
+            <div
+                class="balance"
+                id="balance">
+                ₹0.00
+            </div>
+
+        </div>
+
+        <div class="hero-card-icon">
+            💳
+        </div>
+
+    </div>
+
+    <div class="hero-stats">
+
+        <div class="hero-stat">
+
+            <span>Total Income</span>
+
+            <strong id="heroIncome">
+                ₹0.00
+            </strong>
+
+        </div>
+
+        <div class="hero-stat">
+
+            <span>Total Expenses</span>
+
+            <strong id="heroExpense">
+                ₹0.00
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SUMMARY -->
+
+<section class="summary">
+
+    <div class="card summary-card">
+
+        <div class="top">
+
+            <small>Total Income</small>
+
+            <div class="summary-icon income-icon">
+                ↗
+            </div>
+
+        </div>
+
+        <h3
+            class="income"
+            id="totalIncome">
+            ₹0.00
+        </h3>
+
+    </div>
+
+
+    <div class="card summary-card">
+
+        <div class="top">
+
+            <small>Total Expenses</small>
+
+            <div class="summary-icon expense-icon">
+                ↘
+            </div>
+
+        </div>
+
+        <h3
+            class="expense"
+            id="totalExpense">
+            ₹0.00
+        </h3>
+
+    </div>
+
+
+    <div class="card summary-card">
+
+        <div class="top">
+
+            <small>Today's Spending</small>
+
+            <div class="summary-icon today-icon">
+                📅
+            </div>
+
+        </div>
+
+        <h3 id="todayExpense">
+            ₹0.00
+        </h3>
+
+    </div>
+
+</section>
+
+
+<!-- MAIN -->
+
+<div class="main-grid">
+
+
+<!-- TRANSACTIONS -->
+
+<section class="card">
+
+    <div class="section-title">
+
+        <h2>Transactions</h2>
+
+        <span id="transactionCount">
+            0 transactions
+        </span>
+
+    </div>
+
+
+    <div class="filters">
+
+        <div class="search">
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search transactions..."
+                oninput="renderTransactions()">
+
+        </div>
+
+
+        <select
+            id="filter"
+            onchange="renderTransactions()">
+
+            <option value="all">
+                All
+            </option>
+
+            <option value="expense">
+                Expenses
+            </option>
+
+            <option value="income">
+                Income
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div
+        class="transaction-list"
+        id="transactionList">
+    </div>
+
+</section>
+
+
+<!-- SPENDING OVERVIEW -->
+
+<section class="card">
+
+    <div class="section-title">
+
+        <h2>Spending Overview</h2>
+
+        <span>All time</span>
+
+    </div>
+
+
+    <div class="chart-tabs">
+
+        <button
+            class="chart-tab active"
+            onclick="showChart('category',this)">
+            Categories
+        </button>
+
+        <button
+            class="chart-tab"
+            onclick="showChart('daily',this)">
+            Daily
+        </button>
+
+    </div>
+
+
+    <div
+        class="chart-box"
+        id="chartBox">
+    </div>
+
+</section>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        Your financial data stays on this device
+    </p>
+
+    <p style="margin-top:7px;">
+        Made by <strong>Arjuuw</strong>
+    </p>
+
+</footer>
+
+</div>
+
+
+<!-- ADD BUTTON -->
+
+<button
+    class="add-btn"
+    onclick="openModal()"
+    aria-label="Add transaction">
+    ＋
+</button>
+
+
+<!-- MODAL -->
+
+<div
+    class="overlay"
+    id="overlay">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>Add Transaction</h2>
+
+                <small>
+                    Record your money movement
+                </small>
+
+            </div>
+
+            <button
+                class="close"
+                type="button"
+                onclick="closeModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <!-- TYPE -->
+
+        <div class="type-switch">
+
+            <button
+                type="button"
+                id="expenseType"
+                class="active"
+                onclick="setType('expense')">
+
+                💸 Expense
+
+            </button>
+
+
+            <button
+                type="button"
+                id="incomeType"
+                onclick="setType('income')">
+
+                💰 Income
+
+            </button>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <div>
+
+            <div class="form-group">
+
+                <label>
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="amount"
+                    min="0.01"
+                    step="0.01"
+                    inputmode="decimal"
+                    placeholder="₹ 0.00">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Category
+                </label>
+
+                <select id="category">
+
+                    <option value="Food">
+                        🍔 Food
+                    </option>
+
+                    <option value="Transport">
+                        🚌 Transport
+                    </option>
+
+                    <option value="Shopping">
+                        🛍️ Shopping
+                    </option>
+
+                    <option value="Entertainment">
+                        🎮 Entertainment
+                    </option>
+
+                    <option value="Education">
+                        📚 Education
+                    </option>
+
+                    <option value="Bills">
+                        🏠 Bills
+                    </option>
+
+                    <option value="Health">
+                        💊 Health
+                    </option>
+
+                    <option value="Recharge">
+                        📱 Recharge
+                    </option>
+
+                    <option value="Other">
+                        📦 Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <input
+                    type="text"
+                    id="description"
+                    maxlength="60"
+                    placeholder="What was this for?">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="date">
+
+            </div>
+
+
+            <!-- IMPORTANT:
+                 This is NOT a submit button.
+                 It directly calls saveTransaction().
+            -->
+
+            <button
+                class="save-btn"
+                type="button"
+                onclick="saveTransaction()">
+
+                Save Transaction
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast">
+</div>
+
+
+<script>
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+const STORAGE_KEY =
+    "arjuuw_money_tracker_v3";
+
+
+let transactions = [];
+
+
+/*
+   Load data safely.
+*/
+
+function loadData(){
+
+    try{
+
+        const data =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if(!data){
+
+            transactions = [];
+
+            return;
+        }
+
+
+        const parsed =
+            JSON.parse(data);
+
+
+        if(Array.isArray(parsed)){
+
+            transactions = parsed;
+
+        }else{
+
+            transactions = [];
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Storage error:",
+            error
+        );
+
+        transactions = [];
+
+    }
+
+}
+
+
+loadData();
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let currentType = "expense";
+
+let chartMode = "category";
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function money(value){
+
+    return "₹" +
+        Number(value || 0).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+
+}
+
+
+function todayString(){
+
+    const d = new Date();
+
+    const offset =
+        d.getTimezoneOffset();
+
+
+    return new Date(
+        d.getTime() -
+        offset * 60000
+    )
+    .toISOString()
+    .split("T")[0];
+
+}
+
+
+/* =========================================================
+   SAVE DATA
+========================================================= */
+
+function saveData(){
+
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(transactions)
+        );
+
+
+        /*
+           Verify that it actually saved.
+        */
+
+        const verification =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+
+        if(!verification){
+
+            throw new Error(
+                "Storage verification failed"
+            );
+
+        }
+
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            "SAVE ERROR:",
+            error
+        );
+
+
+        showToast(
+            "Storage is unavailable"
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(){
+
+    document
+        .getElementById("overlay")
+        .classList.add("show");
+
+
+    document
+        .getElementById("amount")
+        .value = "";
+
+
+    document
+        .getElementById("description")
+        .value = "";
+
+
+    document
+        .getElementById("date")
+        .value =
+        todayString();
+
+
+    setType("expense");
+
+
+    setTimeout(function(){
+
+        document
+            .getElementById("amount")
+            .focus();
+
+    },200);
+
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById("overlay")
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+document
+    .getElementById("overlay")
+    .addEventListener(
+        "click",
+        function(e){
+
+            if(e.target === this){
+
+                closeModal();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   TYPE
+========================================================= */
+
+function setType(type){
+
+    currentType = type;
+
+
+    document
+        .getElementById("expenseType")
+        .classList.toggle(
+            "active",
+            type === "expense"
+        );
+
+
+    document
+        .getElementById("incomeType")
+        .classList.toggle(
+            "active",
+            type === "income"
+        );
+
+}
+
+
+/* =========================================================
+   SAVE TRANSACTION
+========================================================= */
+
+function saveTransaction(){
+
+    console.log(
+        "Save button clicked"
+    );
+
+
+    const amountElement =
+        document.getElementById(
+            "amount"
+        );
+
+
+    const categoryElement =
+        document.getElementById(
+            "category"
+        );
+
+
+    const descriptionElement =
+        document.getElementById(
+            "description"
+        );
+
+
+    const dateElement =
+        document.getElementById(
+            "date"
+        );
+
+
+    const amount =
+        Number(
+            amountElement.value
+        );
+
+
+    const category =
+        categoryElement.value;
+
+
+    const description =
+        descriptionElement.value.trim();
+
+
+    const date =
+        dateElement.value;
+
+
+    /* AMOUNT CHECK */
+
+    if(!amount || amount <= 0){
+
+        showToast(
+            "Please enter an amount"
+        );
+
+
+        amountElement.focus();
+
+        return;
+
+    }
+
+
+    /* DATE CHECK */
+
+    if(!date){
+
+        showToast(
+            "Please select a date"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Save selected type BEFORE
+       anything gets reset.
+    */
+
+    const typeToSave =
+        currentType;
+
+
+    /*
+       Create transaction.
+    */
+
+    const transaction = {
+
+        id:
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2),
+
+        type:
+            typeToSave,
+
+        amount:
+            amount,
+
+        category:
+            category,
+
+        description:
+            description || category,
+
+        date:
+            date
+
+    };
+
+
+    console.log(
+        "New transaction:",
+        transaction
+    );
+
+
+    /*
+       Add to array.
+    */
+
+    transactions.unshift(
+        transaction
+    );
+
+
+    /*
+       Save to localStorage.
+    */
+
+    const successful =
+        saveData();
+
+
+    /*
+       If storage failed,
+       remove the transaction again.
+    */
+
+    if(!successful){
+
+        transactions =
+            transactions.filter(
+                function(t){
+
+                    return t.id !==
+                        transaction.id;
+
+                }
+            );
+
+        return;
+
+    }
+
+
+    /*
+       Update the website.
+    */
+
+    updateDashboard();
+
+
+    /*
+       Close modal.
+    */
+
+    closeModal();
+
+
+    /*
+       Reset inputs.
+    */
+
+    amountElement.value = "";
+
+    descriptionElement.value = "";
+
+    dateElement.value =
+        todayString();
+
+
+    setType("expense");
+
+
+    /*
+       Success message.
+    */
+
+    showToast(
+        typeToSave === "income"
+        ? "Income saved successfully"
+        : "Expense saved successfully"
+    );
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function updateDashboard(){
+
+    let income = 0;
+
+    let expense = 0;
+
+
+    transactions.forEach(
+        function(t){
+
+            const amount =
+                Number(t.amount) || 0;
+
+
+            if(t.type === "income"){
+
+                income += amount;
+
+            }else{
+
+                expense += amount;
+
+            }
+
+        }
+    );
+
+
+    const balance =
+        income - expense;
+
+
+    const today =
+        todayString();
+
+
+    const todayExpense =
+        transactions
+            .filter(
+                function(t){
+
+                    return (
+                        t.type === "expense" &&
+                        t.date === today
+                    );
+
+                }
+            )
+            .reduce(
+                function(sum,t){
+
+                    return sum +
+                        (Number(t.amount) || 0);
+
+                },
+                0
+            );
+
+
+    document
+        .getElementById("balance")
+        .textContent =
+        money(balance);
+
+
+    document
+        .getElementById("heroIncome")
+        .textContent =
+        money(income);
+
+
+    document
+        .getElementById("heroExpense")
+        .textContent =
+        money(expense);
+
+
+    document
+        .getElementById("totalIncome")
+        .textContent =
+        money(income);
+
+
+    document
+        .getElementById("totalExpense")
+        .textContent =
+        money(expense);
+
+
+    document
+        .getElementById("todayExpense")
+        .textContent =
+        money(todayExpense);
+
+
+    renderTransactions();
+
+    renderOverview();
+
+}
+
+
+/* =========================================================
+   ICONS
+========================================================= */
+
+const icons = {
+
+    Food:"🍔",
+
+    Transport:"🚌",
+
+    Shopping:"🛍️",
+
+    Entertainment:"🎮",
+
+    Education:"📚",
+
+    Bills:"🏠",
+
+    Health:"💊",
+
+    Recharge:"📱",
+
+    Other:"📦"
+
+};
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(text){
+
+    return String(text || "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(date){
+
+    if(!date){
+
+        return "Unknown date";
+
+    }
+
+
+    const d =
+        new Date(
+            date + "T00:00:00"
+        );
+
+
+    if(isNaN(d.getTime())){
+
+        return "Unknown date";
+
+    }
+
+
+    return d.toLocaleDateString(
+        "en-IN",
+        {
+            day:"numeric",
+            month:"short",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+function renderTransactions(){
+
+    const search =
+        document
+            .getElementById("search")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const filter =
+        document
+            .getElementById("filter")
+            .value;
+
+
+    const list =
+        document
+            .getElementById(
+                "transactionList"
+            );
+
+
+    const filtered =
+        transactions.filter(
+            function(t){
+
+                const description =
+                    String(
+                        t.description || ""
+                    ).toLowerCase();
+
+
+                const category =
+                    String(
+                        t.category || ""
+                    ).toLowerCase();
+
+
+                const searchMatch =
+                    description.includes(
+                        search
+                    ) ||
+                    category.includes(
+                        search
+                    );
+
+
+                const filterMatch =
+                    filter === "all" ||
+                    t.type === filter;
+
+
+                return (
+                    searchMatch &&
+                    filterMatch
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "transactionCount"
+        )
+        .textContent =
+        `${filtered.length} transaction${
+            filtered.length === 1
+            ? ""
+            : "s"
+        }`;
+
+
+    if(!filtered.length){
+
+        list.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🧾
+                </div>
+
+                <strong>
+                    No transactions yet
+                </strong>
+
+                <p>
+                    Add your first transaction using +
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        filtered.map(
+            function(t){
+
+                const type =
+                    t.type === "income"
+                    ? "income"
+                    : "expense";
+
+
+                const category =
+                    String(
+                        t.category || "Other"
+                    );
+
+
+                const description =
+                    String(
+                        t.description ||
+                        category
+                    );
+
+
+                const amount =
+                    Number(t.amount) || 0;
+
+
+                return `
+
+                    <div class="transaction">
+
+                        <div class="transaction-icon">
+                            ${icons[category] || "📦"}
+                        </div>
+
+
+                        <div class="transaction-info">
+
+                            <strong>
+                                ${escapeHTML(description)}
+                            </strong>
+
+                            <small>
+                                ${escapeHTML(category)}
+                                •
+                                ${formatDate(t.date)}
+                            </small>
+
+                        </div>
+
+
+                        <div class="transaction-amount">
+
+                            <strong class="${type}">
+                                ${
+                                    type === "expense"
+                                    ? "-"
+                                    : "+"
+                                }
+                                ${money(amount)}
+                            </strong>
+
+                        </div>
+
+
+                        <button
+                            class="delete-btn"
+                            type="button"
+                            onclick="deleteTransaction('${t.id}')">
+
+                            🗑
+
+                        </button>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+function deleteTransaction(id){
+
+    const transaction =
+        transactions.find(
+            function(t){
+
+                return String(t.id) ===
+                    String(id);
+
+            }
+        );
+
+
+    if(!transaction){
+
+        return;
+
+    }
+
+
+    if(!confirm(
+        "Delete this transaction?"
+    )){
+
+        return;
+
+    }
+
+
+    transactions =
+        transactions.filter(
+            function(t){
+
+                return String(t.id) !==
+                    String(id);
+
+            }
+        );
+
+
+    saveData();
+
+    updateDashboard();
+
+    showToast(
+        "Transaction deleted"
+    );
+
+}
+
+
+/* =========================================================
+   SPENDING OVERVIEW
+========================================================= */
+
+function renderOverview(){
+
+    const box =
+        document.getElementById(
+            "chartBox"
+        );
+
+
+    if(chartMode === "category"){
+
+        renderCategoryOverview(box);
+
+    }else{
+
+        renderDailyOverview(box);
+
+    }
+
+}
+
+
+/* =========================================================
+   CATEGORY OVERVIEW
+========================================================= */
+
+function renderCategoryOverview(box){
+
+    const totals = {};
+
+
+    transactions
+        .filter(
+            function(t){
+
+                return t.type === "expense";
+
+            }
+        )
+        .forEach(
+            function(t){
+
+                const category =
+                    t.category || "Other";
+
+
+                totals[category] =
+                    (totals[category] || 0) +
+                    (Number(t.amount) || 0);
+
+            }
+        );
+
+
+    const labels =
+        Object.keys(totals);
+
+
+    if(!labels.length){
+
+        box.innerHTML = `
+
+            <div class="chart-empty">
+
+                <div class="chart-empty-icon">
+                    📊
+                </div>
+
+                <strong>
+                    No spending data yet
+                </strong>
+
+                <p>
+                    Add an expense to see your overview
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const max =
+        Math.max(
+            ...Object.values(totals)
+        );
+
+
+    box.innerHTML = `
+
+        <div class="bar-chart">
+
+            ${
+                labels.map(
+                    function(category){
+
+                        const value =
+                            totals[category];
+
+
+                        const height =
+                            Math.max(
+                                5,
+                                (value / max) * 100
+                            );
+
+
+                        return `
+
+                            <div class="bar-item">
+
+                                <div class="bar-value">
+                                    ${money(value)}
+                                </div>
+
+                                <div
+                                    class="bar"
+                                    style="height:${height}%"
+                                    title="${escapeHTML(category)}: ${money(value)}">
+                                </div>
+
+                                <div class="bar-label">
+                                    ${escapeHTML(category)}
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   DAILY OVERVIEW
+========================================================= */
+
+function renderDailyOverview(box){
+
+    const daily = {};
+
+
+    transactions
+        .filter(
+            function(t){
+
+                return t.type === "expense";
+
+            }
+        )
+        .forEach(
+            function(t){
+
+                const date =
+                    t.date;
+
+
+                daily[date] =
+                    (daily[date] || 0) +
+                    (Number(t.amount) || 0);
+
+            }
+        );
+
+
+    const dates =
+        Object.keys(daily).sort();
+
+
+    if(!dates.length){
+
+        box.innerHTML = `
+
+            <div class="chart-empty">
+
+                <div class="chart-empty-icon">
+                    📈
+                </div>
+
+                <strong>
+                    No daily spending yet
+                </strong>
+
+                <p>
+                    Your spending will appear here
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const recent =
+        dates.slice(-14);
+
+
+    const max =
+        Math.max(
+            ...recent.map(
+                function(date){
+                    return daily[date];
+                }
+            )
+        );
+
+
+    box.innerHTML = `
+
+        <div class="bar-chart">
+
+            ${
+                recent.map(
+                    function(date){
+
+                        const value =
+                            daily[date];
+
+
+                        const height =
+                            Math.max(
+                                5,
+                                (value / max) * 100
+                            );
+
+
+                        const d =
+                            new Date(
+                                date +
+                                "T00:00:00"
+                            );
+
+
+                        const label =
+                            d.toLocaleDateString(
+                                "en-IN",
+                                {
+                                    day:"numeric",
+                                    month:"short"
+                                }
+                            );
+
+
+                        return `
+
+                            <div class="bar-item">
+
+                                <div class="bar-value">
+                                    ${money(value)}
+                                </div>
+
+                                <div
+                                    class="bar"
+                                    style="height:${height}%">
+                                </div>
+
+                                <div class="bar-label">
+                                    ${label}
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   CHART TAB
+========================================================= */
+
+function showChart(mode,button){
+
+    chartMode = mode;
+
+
+    document
+        .querySelectorAll(".chart-tab")
+        .forEach(
+            function(btn){
+
+                btn.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    button.classList.add(
+        "active"
+    );
+
+
+    renderOverview();
+
+}
+
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+function toggleTheme(){
+
+    document.body
+        .classList
+        .toggle("dark");
+
+
+    const dark =
+        document.body
+            .classList
+            .contains("dark");
+
+
+    localStorage.setItem(
+        "arjuuw_dark_mode",
+        dark ? "true" : "false"
+    );
+
+
+    document
+        .getElementById("themeBtn")
+        .textContent =
+        dark ? "☀" : "☾";
+
+}
+
+
+/* LOAD DARK MODE */
+
+if(
+    localStorage.getItem(
+        "arjuuw_dark_mode"
+    ) === "true"
+){
+
+    document.body
+        .classList
+        .add("dark");
+
+
+    document
+        .getElementById("themeBtn")
+        .textContent =
+        "☀";
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        renderTransactions
+    );
+
+
+/* =========================================================
+   CSV EXPORT
+========================================================= */
+
+function exportCSV(){
+
+    if(!transactions.length){
+
+        showToast(
+            "No transactions to export"
+        );
+
+        return;
+
+    }
+
+
+    let csv =
+        "Date,Type,Category,Description,Amount\n";
+
+
+    transactions.forEach(
+        function(t){
+
+            const description =
+                String(
+                    t.description || ""
+                )
+                .replace(
+                    /"/g,
+                    '""'
+                );
+
+
+            csv +=
+                `"${t.date}",` +
+                `"${t.type}",` +
+                `"${t.category}",` +
+                `"${description}",` +
+                `"${t.amount}"\n`;
+
+        }
+    );
+
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href = url;
+
+    link.download =
+        "Arjuuw-Money-Tracker.csv";
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    setTimeout(
+        function(){
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        },
+        100
+    );
+
+
+    showToast(
+        "CSV exported successfully"
+    );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            function(){
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2400
+        );
+
+}
+
+
+/* =========================================================
+   ESCAPE KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Escape"){
+
+            closeModal();
+
+        }
+
+
+        /*
+           Press Enter while amount/description
+           is focused to save.
+        */
+
+        if(
+            e.key === "Enter" &&
+            document
+                .getElementById("overlay")
+                .classList
+                .contains("show")
+        ){
+
+            const active =
+                document.activeElement;
+
+
+            if(
+                active.id === "amount" ||
+                active.id === "description"
+            ){
+
+                e.preventDefault();
+
+                saveTransaction();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+document
+    .getElementById("date")
+    .value =
+    todayString();
+
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
